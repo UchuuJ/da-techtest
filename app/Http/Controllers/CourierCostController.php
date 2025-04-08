@@ -20,6 +20,11 @@ class CourierCostController extends BaseController
          * return Calculated data
          */
 
+        /**
+         * Controller mainly used to organise and validate the data. While the actual logic is offloaded into a helper class
+         * So we can reuse that piece of logic if needed.
+         */
+
         $Request->validate([
             'cost_per_mile' => 'required|numeric',
             'no_of_drop_off_locations' => 'required|numeric',
@@ -68,6 +73,11 @@ class CourierCostController extends BaseController
         $CourierCostCalculationHistoryModel->calculation_created_at = (New \DateTime())->format('Y-m-d H:i:s');
         $CourierCostCalculationHistoryModel->user_id = Auth::user()->id;
         $CourierCostCalculationHistoryModel->save();
+
+        foreach ($DistanceBetweenLocationsModels as $DistanceBetweenLocationsModel){
+            $DistanceBetweenLocationsModel->courier_cost_calc_history_id = $CourierCostCalculationHistoryModel->id;
+            $DistanceBetweenLocationsModel->save();
+        }
 
 
         //return Calculated values

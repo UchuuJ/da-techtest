@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use DateTime;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-
+/**
+ * Stores the Input json and the output json against the user
+ * Done so we can see a history previous calculations and maybe debugging.
+ */
 class CourierCostCalculationHistoryModel extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -33,6 +35,10 @@ class CourierCostCalculationHistoryModel extends Authenticatable
     public $timestamps = false;
     protected $table = 'courier_cost_calc_history';
 
+
+    /**
+     * Ideally these attributes should have a getter and setter
+     */
 
     /** @var $user_id int */
     protected $user_id;

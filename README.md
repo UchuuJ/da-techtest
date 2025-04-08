@@ -1,66 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# DA Tech Test
+This project is a calculator module that generates costs for a courier service.
+It calculates the total distance and total cost in a delivery run
+## Requirements
+| System Requirements          |
+|------------------------------|
+| x86 2GHz Duel Core Processor |
+| 2GB RAM                      |
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This Laravel 12 Project requires the following (Well it's what I built this API module on):
 
-## About Laravel
+| Software Requirements |
+|-----------------------|
+| LAMP Stack            |
+| Ubuntu 20.04.6        |
+| Apache 2              |
+| MySQL 8               |
+| PHP 8.3               |
+| composer 2.8.3        |
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Install Instructions
+Clone the repository using the following command.
+```
+git clone git@github.com:UchuuJ/da-techtest.git
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Change directory into `da-techtest` and run.
+```
+composer install
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Once composer has finished installing the required dependencies, rename the example `.env.example` file and rename it to `.env`.
+```
+mv .env.example .env
+```
+Open `.env` in the editor of your choice and set up your database connection information.
+```
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=da_techtest
+DB_USERNAME=root
+DB_PASSWORD=examplePass
+```
 
-## Learning Laravel
+Once done, save the file and open up mysql in your favourite editor. But for this guide we're going to use the commandline client.
+```
+mysql -uroot -pexamplePass
+#Upon successful login 
+CREATE DATABASE da_techtest
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Once the database is set up, we should be close to to launch. So now we need to run the migratiosn
+```php
+php artisan migrate
+```
+When the migration is finished we're going to launch artisan's laravel php server
+```
+php artisan serve
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Voila we have installed and set up the application.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Usage Guide
+In order to use the calculator we recomend you use [Postman](http://localhost.co.uk)
+I have included two postman collection requests for testing. 
 
-## Laravel Sponsors
+## API Guide
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### api/login
+This is mainly to login and get the authentication token.
+The migration has created a dummy user. 
+```
+email: billy@da.test
+password: billy
+```
 
-### Premium Partners
+| api/login        | | POST   |    |                                                                   |
+|------------------|-|--------|----------|-------------------------------------------------------------------|
+| **Parameters**   ||        |    |                                                                   |
+| ||        |   |                                                                   |
+| email            | | string | required | User Email address                                                |
+| password         || string | requried | User Password                                                     |
+|  ||        ||                                                                   |
+| **Response**     || 200    ||                                                                   |
+| token            || string || Users auth token. Needed inorder to access the `api/courier-cost` |
+|  ||        ||                                                                   |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
 
-## Contributing
+### api/courier-cost
+This is the api route that does the actual maths. 
+Basically it works out the total distance and total cost. 
+Total distance is `Sum(distance_between_locations)` and total price is `cost_per_mile *  Sum(distance_between_locations)` 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## WARNING
+in order to se this route you'll need to make sure you have the following headers set:
+```
+Accept: application/json
+Authorization: Bearer <`token` from `api/login`>
+```
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| api/courier-cost            | | POST         |          |                                                                                                                                                                               |
+|-----------------------------|-|--------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Parameters**              ||              |          |                                                                                                                                                                               |
+|                             ||              |          |                                                                                                                                                                               |
+| cost_per_mile               | | float        | required | The cost per mile in GBP                                                                                                                                                      |
+| no_of_drop_off              || int          | requried | The number of delivery drop offs                                                                                                                                              |
+| distance_between_locations  || array(float) | required | The distance between Locations so if there is 3 drop offs. The array will have [4,4,5] representing the distance's of the drop offs. so A is 4 mile, B is 4 mile, C is 5 mile |
+| extra_person_count          || int          |          | The number of extra people                                                                                                                                                    |
+| extra_person_price_override || float        |          | The price per extra person in GBP overrides the default price which at the moment is £15                                                                                      |
+|                             ||              |          |                                                                                                                                                                               |
+| **Response**                || 200          |          |                                                                                                                                                                               |
+| user_id                     || int          |          | User who created the calculation (IRL this would be quote_id or something simiular and not the user directly)                                                                 |
+| number_of_drop_offs         || int          |          | The number of delivery drop offs                                                                                                                                              |
+| total_distance              || float        |          | The sum of all distances so in the case of the example above `(4+4+5) = 13 Miles`                                                                                             |
+| cost_per_mile               || float        |          | The cost per mile in GBP                                                                                                                                                      |
+| total_price                 || float        |          | The total Price of all distances which is worked out by (distance * cost_per_mile)                                                                                            |
+| extra_person_price          || float        |          | The price per extra person in GBP                                                                                                                                             |
+| extra_person_count          || int          |          | The number of extra people                                                                                                                                                    |
+| calculation_created_at      || datetime      |          | The datetime this calculation was made at                                                                                                                                     |
