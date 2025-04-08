@@ -8,34 +8,35 @@ use App\Models\DistanceBetweenLocationsModel;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-class CouriourCostController extends BaseController
+class CourierCostController extends BaseController
 {
     public function courierCostCalculater(Request $Request){
-        //print "LOL!";
-     //   var_dump($Request->all());
-     //   var_dump(json_decode($Request->input('distance_between_locations')));
-        if(!Auth::check()){
-            //print "holder";
-        }
         /**
-         * How this is probably going to work
+         * How this method works
          * Send data to route
          * Store data in a collection (Not sure of the syntax at the moment, goal is to just get it to work )
          * Process data and do calculation
-         * Store data in database IF we're using Mysql
+         * Store data in database
          * return Calculated data
          */
+
+        $Request->validate([
+            'cost_per_mile' => 'required|numeric',
+            'no_of_drop_off_locations' => 'required|numeric',
+
+        ]);
 
         $CourierCostCalculationHistoryModel = new CourierCostCalculationHistoryModel();
         $CourierCostCalculationHistoryModel->cost_per_mile = $Request->input('cost_per_mile');
         $CourierCostCalculationHistoryModel->no_of_drop_off_locations = $Request->input('no_of_drop_off_locations');
-        $CourierCostCalculationHistoryModel->extra_person_count = $Request->input('extra_person_count') ?? null;
-        $CourierCostCalculationHistoryModel->extra_person_price_override = $Request->input('extra_person_price_override') ?? null;
+        $CourierCostCalculationHistoryModel->extra_person_count = is_numeric($Request->input('extra_person_count')) ? $Request->input('extra_person_count') : null;
+        $CourierCostCalculationHistoryModel->extra_person_price_override = is_numeric($Request->input('extra_person_price_override')) ? $Request->input('extra_person_price_override') : null;
 
-        $DistanceData = $Request->input('distance_between_locations');
-        if(strlen($DistanceData) > 0) {
-            $DistanceData = json_decode($DistanceData);
-        }
+       $DistanceData = $Request->input('distance_between_locations');
+       if (strlen($DistanceData) > 0) {
+           $DistanceData = json_decode($DistanceData);
+       }
+
         if(!$this->validateDistanceData($DistanceData, $CourierCostCalculationHistoryModel->no_of_drop_off_locations)){
             throw new \Exception("The number of Drop off Locations don't match the number of Distances",400);
         }
@@ -54,7 +55,7 @@ class CouriourCostController extends BaseController
         if(empty($TotalMilageAndCosts)){
             throw new \Exception("Was unable to calculate totalCost and totalDistance is the input json missing something?",400);
         }
-        var_dump($TotalMilageAndCosts);
+
         $CourierCostCalculationHistoryModel->total_price = $TotalMilageAndCosts['totalCost'];
         $CourierCostCalculationHistoryModel->total_distance = $TotalMilageAndCosts['totalDistance'];
         if(!empty($TotalExtraPersonCost)){
@@ -64,16 +65,14 @@ class CouriourCostController extends BaseController
             $CourierCostCalculationHistoryModel->extra_person_price = config('courierCost.DEFAULT_EXTRA_PERSON_PRICE');
         }
 
-
-        //Check if we're using MYSQL and Save to DB
         $CourierCostCalculationHistoryModel->calculation_created_at = (New \DateTime())->format('Y-m-d H:i:s');
-        $CourierCostCalculationHistoryModel->user_id = 1;
+        $CourierCostCalculationHistoryModel->user_id = Auth::user()->id;
         $CourierCostCalculationHistoryModel->save();
 
 
         //return Calculated values
         return response()->json([
-            'user_id' => 1,
+            'user_id' => Auth::user()->id,
             'number_of_drop_offs' => $CourierCostCalculationHistoryModel->no_of_drop_off_locations,
             'total_distance' => $CourierCostCalculationHistoryModel->total_distance,
             'cost_per_mile'=>$CourierCostCalculationHistoryModel->cost_per_mile,
@@ -84,15 +83,16 @@ class CouriourCostController extends BaseController
         ],'200');
 
     }
-
-    private function validateDistanceData($DistanceData, $numberOfDropOffLocations){
+    private function validateDistanceData($DistanceData, $numberOfDropOffLocations) : bool {
         /**
          * IF DistanceData exists AND DistanceData matches the amount of Drop off Locations AND The amount of Drop off Locations is less then 5
          */
+        if(empty($DistanceData)){
+            return false;
+        }
 
         return sizeof($DistanceData)
             && (sizeof($DistanceData) == $numberOfDropOffLocations)
-            //TODO: Make magic number a ENV VAR
             && (sizeof($DistanceData) < config('courierCost.MAXIMUM_AMOUNT_OF_STOPS'));
     }
 }

@@ -3,7 +3,7 @@ namespace App\Helpers;
 
 class CourierCostCalculateHelper
 {
-    public function calculateMilageageAndCosts($costPerMile, $Distances){
+    public function calculateMilageageAndCosts($costPerMile, $Distances): array {
         if(empty($costPerMile) || empty($Distances) ){
             return false;
         }
@@ -16,7 +16,7 @@ class CourierCostCalculateHelper
         return ['totalCost' => $totalCost, 'totalDistance' => $totalDistance];
     }
 
-    public function calculateExtraPersonCost($extraPersonCount = null, $extraPersonPriceOverride = null ){
+    public function calculateExtraPersonCost($extraPersonCount = null, $extraPersonPriceOverride = null ): float{
         if(empty($extraPersonCount) || empty($extraPersonPriceOverride) ){
             return false;
         }

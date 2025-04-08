@@ -1,11 +1,8 @@
 <?php
 
-use App\Http\Controllers\CouriourCostController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Routing\Controllers\Middleware;
-
 Route::get('/', function () {
-    return view('welcome');
+    return http_response_code(403);
 });
 
-Route::post('app/courier-cost', [CouriourCostController::class, 'courierCostCalculater']);
+
