@@ -59,10 +59,16 @@ class CouriourCostController extends BaseController
         $CourierCostCalculationHistoryModel->total_distance = $TotalMilageAndCosts['totalDistance'];
         if(!empty($TotalExtraPersonCost)){
             $CourierCostCalculationHistoryModel->total_price += $TotalExtraPersonCost;
+            $CourierCostCalculationHistoryModel->extra_person_price = $TotalExtraPersonCost;
+        } else {
+            $CourierCostCalculationHistoryModel->extra_person_price = config('courierCost.DEFAULT_EXTRA_PERSON_PRICE');
         }
 
 
         //Check if we're using MYSQL and Save to DB
+        $CourierCostCalculationHistoryModel->calculation_created_at = (New \DateTime())->format('Y-m-d H:i:s');
+        $CourierCostCalculationHistoryModel->user_id = 1;
+        $CourierCostCalculationHistoryModel->save();
 
 
         //return Calculated values
@@ -71,10 +77,10 @@ class CouriourCostController extends BaseController
             'number_of_drop_offs' => $CourierCostCalculationHistoryModel->no_of_drop_off_locations,
             'total_distance' => $CourierCostCalculationHistoryModel->total_distance,
             'cost_per_mile'=>$CourierCostCalculationHistoryModel->cost_per_mile,
-            'extra_person_price' =>$CourierCostCalculationHistoryModel->extra_person_price_override ?? null,
+            'extra_person_price' =>$CourierCostCalculationHistoryModel->extra_person_price,
             'extra_person_count' =>$CourierCostCalculationHistoryModel->extra_person_count ?? null,
             'total_price' => $CourierCostCalculationHistoryModel->total_price,
-            'calculation_created_at' =>(New \DateTime())->format('Y-m-d H:i:s'),
+            'calculation_created_at' => $CourierCostCalculationHistoryModel->calculation_created_at,
         ],'200');
 
     }
@@ -87,6 +93,6 @@ class CouriourCostController extends BaseController
         return sizeof($DistanceData)
             && (sizeof($DistanceData) == $numberOfDropOffLocations)
             //TODO: Make magic number a ENV VAR
-            && (sizeof($DistanceData) < 5);
+            && (sizeof($DistanceData) < config('courierCost.MAXIMUM_AMOUNT_OF_STOPS'));
     }
 }

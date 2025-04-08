@@ -1,0 +1,8 @@
+<?php
+
+return [
+    'MAXIMUM_AMOUNT_OF_STOPS' => env('MAXIMUM_AMOUNT_OF_STOPS', '5'),
+    'DEFAULT_EXTRA_PERSON_PRICE' => env('DEFAULT_EXTRA_PERSON_PRICE', '15'),
+
+
+];
