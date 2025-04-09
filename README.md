@@ -46,10 +46,11 @@ Once done, save the file and open up mysql in your favourite editor. But for thi
 ```
 mysql -uroot -pexamplePass
 #Upon successful login 
-CREATE DATABASE da_techtest
+CREATE DATABASE da_techtest;
+\q
 ```
 
-Once the database is set up, we should be close to to launch. So now we need to run the migratiosn
+Once the database is set up, we should be close to launch. So now we need to run the migratiosn
 ```php
 php artisan migrate
 ```
@@ -61,8 +62,9 @@ php artisan serve
 Voila we have installed and set up the application.
 
 ## Usage Guide
-In order to use the calculator we recomend you use [Postman](http://localhost.co.uk)
+In order to use the calculator we recommend you use [Postman](https://postman.com)
 I have included two postman collection requests for testing. 
+These requests can be found in the root of the repository `'da tech test.postman_collection.json'`
 
 ## API Guide
 
@@ -117,3 +119,9 @@ Authorization: Bearer <`token` from `api/login`>
 | extra_person_price          || float        |          | The price per extra person in GBP                                                                                                                                             |
 | extra_person_count          || int          |          | The number of extra people                                                                                                                                                    |
 | calculation_created_at      || datetime      |          | The datetime this calculation was made at                                                                                                                                     |
+
+# Ways This API Module Could be Improved Upon
+We could improve this API by doing the following:
+* Adding unit tests.
+* Have the output not display `extra_person_price`, `extra_person_count` when `extra_person_count > 0 OR !extra_person_count`
+* Use Laravel Collection Data Structure instead of model for returning data.

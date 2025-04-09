@@ -25,7 +25,7 @@ class AuthController extends BaseController
             $User = Auth::user();
             $token = $User->createToken('auth_token');
 
-            return response()->json(['token' => $token->plainTextToken, 'tokenDebug' => $token]);
+            return response()->json(['token' => $token->plainTextToken]);
         }
 
     }

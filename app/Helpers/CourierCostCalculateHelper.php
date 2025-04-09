@@ -8,7 +8,7 @@ class CourierCostCalculateHelper
 {
     public function calculateMilageageAndCosts($costPerMile, $Distances): array {
         if(empty($costPerMile) || empty($Distances) ){
-            return false;
+            return [];
         }
         $totalCost = 0;
         $totalDistance = 0;

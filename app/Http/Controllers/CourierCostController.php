@@ -28,6 +28,7 @@ class CourierCostController extends BaseController
         $Request->validate([
             'cost_per_mile' => 'required|numeric',
             'no_of_drop_off_locations' => 'required|numeric',
+            'distance_between_locations' => 'required',
 
         ]);
 
