@@ -65,13 +65,30 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "email",
-							"value": "billy@da.test",
+							"key": "cost_per_mile",
+							"value": "1",
 							"type": "text"
 						},
 						{
-							"key": "password",
-							"value": "billy",
+							"key": "no_of_drop_of_locations",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "distance_between_locatons",
+							"value": "[55,13,22]",
+							"type": "text"
+						},
+						{
+							"key": "extra_person_price_override",
+							"value": "15",
+							"description": "Not Required",
+							"type": "text"
+						},
+						{
+							"key": "extra_person_count",
+							"value": "0",
+							"description": "Not Required ",
 							"type": "text"
 						}
 					]

@@ -94,7 +94,7 @@ Basically it works out the total distance and total cost.
 Total distance is `Sum(distance_between_locations)` and total price is `cost_per_mile *  Sum(distance_between_locations)` 
 
 ## WARNING
-in order to se this route you'll need to make sure you have the following headers set:
+in order to use this route you'll need to make sure you have the following headers set:
 ```
 Accept: application/json
 Authorization: Bearer <`token` from `api/login`>
