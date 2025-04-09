@@ -1,6 +1,6 @@
 # DA Tech Test
 This project is a calculator module that generates costs for a courier service.
-It calculates the total distance and total cost in a delivery run
+It calculates the total distance and total cost in a delivery run.
 ## Requirements
 | System Requirements          |
 |------------------------------|
@@ -50,11 +50,11 @@ CREATE DATABASE da_techtest;
 \q
 ```
 
-Once the database is set up, we should be close to launch. So now we need to run the migratiosn
+Once the database is set up, we should be close to launch. So now we need to run the migration.
 ```php
 php artisan migrate
 ```
-When the migration is finished we're going to launch artisan's laravel php server
+When the migration is finished we're going to launch artisan's laravel php server.
 ```
 php artisan serve
 ```
@@ -62,7 +62,7 @@ php artisan serve
 Voila we have installed and set up the application.
 
 ## Usage Guide
-In order to use the calculator we recommend you use [Postman](https://postman.com)
+In order to use the calculator we recommend you use [Postman](https://postman.com).
 I have included two postman collection requests for testing. 
 These requests can be found in the root of the repository `'da tech test.postman_collection.json'`
 

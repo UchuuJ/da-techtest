@@ -54,9 +54,13 @@ class CourierCostController extends BaseController
            $DistanceBetweenLocationsModels[] = clone $DistanceBetweenLocationsModel;
         }
 
+        $CourierCostCalculationHistoryModel->extra_person_price = (!empty($CourierCostCalculationHistoryModel->extra_person_price_override)) ? $CourierCostCalculationHistoryModel->extra_person_price_override : config('courierCost.DEFAULT_EXTRA_PERSON_PRICE');
+
+
+
         $CourierCostCalculateHelper = new CourierCostCalculateHelper();
         $TotalMilageAndCosts = $CourierCostCalculateHelper->calculateMilageageAndCosts($CourierCostCalculationHistoryModel->cost_per_mile,array_column($DistanceBetweenLocationsModels,'distance'));
-        $TotalExtraPersonCost = $CourierCostCalculateHelper->calculateExtraPersonCost($CourierCostCalculationHistoryModel->extra_person_count, $CourierCostCalculationHistoryModel->extra_person_price_override);
+        $TotalExtraPersonCost = $CourierCostCalculateHelper->calculateExtraPersonCost($CourierCostCalculationHistoryModel->extra_person_count, $CourierCostCalculationHistoryModel->extra_person_price );
 
         if(empty($TotalMilageAndCosts)){
             throw new \Exception("Was unable to calculate totalCost and totalDistance is the input json missing something?",400);
@@ -66,9 +70,6 @@ class CourierCostController extends BaseController
         $CourierCostCalculationHistoryModel->total_distance = $TotalMilageAndCosts['totalDistance'];
         if(!empty($TotalExtraPersonCost)){
             $CourierCostCalculationHistoryModel->total_price += $TotalExtraPersonCost;
-            $CourierCostCalculationHistoryModel->extra_person_price = $TotalExtraPersonCost;
-        } else {
-            $CourierCostCalculationHistoryModel->extra_person_price = config('courierCost.DEFAULT_EXTRA_PERSON_PRICE');
         }
 
         $CourierCostCalculationHistoryModel->calculation_created_at = (New \DateTime())->format('Y-m-d H:i:s');
